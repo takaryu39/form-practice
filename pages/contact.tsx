@@ -2,8 +2,10 @@ import { FC, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { schema, Schema } from '@/validations/scheme';
+import useMailSend from '@/lib/useMailSend';
 const Contact: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { sendMail } = useMailSend();
   const {
     register,
     handleSubmit,
@@ -12,41 +14,24 @@ const Contact: FC = () => {
     //バリデーションルールを定義
     resolver: zodResolver(schema),
   });
-  const onSubmit: SubmitHandler<Schema> = (data) => {
+  const onSubmit: SubmitHandler<Schema> = async (data) => {
     setIsSubmitting(true);
-    console.log(data);
-    // 送信処理（例えば、APIへのPOST）を書く
-    // ...
-    // setIsSubmitting(false);
+    await sendMail(data);
+    // console.log(data);
   };
   console.log(isSubmitting);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="flex items-center space-x-2">
-        <label htmlFor="firstName" className="font-bold">
-          First Name
+        <label htmlFor="name" className="font-bold">
+          Name
         </label>
-        <input
-          id="firstName"
-          {...register('firstName')}
-          className="border p-2"
-        />
+        <input id="name" {...register('name')} className="border p-2" />
       </div>
-      {errors.firstName?.message && (
-        <p className="text-red-500">{errors.firstName?.message}</p>
+      {errors.name?.message && (
+        <p className="text-red-500">{errors.name?.message}</p>
       )}
-
-      <div className="flex items-center space-x-2">
-        <label htmlFor="lastName" className="font-bold">
-          Last Name
-        </label>
-        <input id="lastName" {...register('lastName')} className="border p-2" />
-      </div>
-      {errors.lastName?.message && (
-        <p className="text-red-500">{errors.lastName?.message}</p>
-      )}
-
       <div className="flex items-center space-x-2">
         <label htmlFor="email" className="font-bold">
           Email
@@ -58,18 +43,18 @@ const Contact: FC = () => {
       )}
 
       <div className="flex items-center space-x-2">
-        <label htmlFor="age" className="font-bold">
-          Age
+        <label htmlFor="message" className="font-bold">
+          message
         </label>
         <input
-          id="age"
-          type="number"
-          {...register('age')}
+          id="message"
+          type="text"
+          {...register('message')}
           className="border p-2"
         />
       </div>
-      {errors.age?.message && (
-        <p className="text-red-500">{errors.age?.message}</p>
+      {errors.message?.message && (
+        <p className="text-red-500">{errors.message?.message}</p>
       )}
       <input
         type="submit"
