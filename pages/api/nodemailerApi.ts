@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 import { NextApiRequest, NextApiResponse } from 'next';
-
+export const config = {
+  runtime: 'experimental-edge',
+};
 export default function sendMail(req: NextApiRequest, res: NextApiResponse) {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
